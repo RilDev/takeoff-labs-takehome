@@ -23,6 +23,36 @@ You don't need to deploy your project for verification. You can push it in githu
 Start simple and go deep, that's how we work.
 
 ### Rules and Evaluation
+
 - You're allowed to use any external ressource that you'ld like
 - After 3h you should send a zip of your project
 - Do spend some time to work on the extra points as we expect you to not only perform the basic implementation
+
+## Features
+
+### List of Chat
+
+- [ ] Sorted by last message date
+- [ ] Displaying profile picture, last message a time indicator
+- [ ] Find a design way to understand that the message has not been read
+- [ ] Clicking on a chat preview open the corresponding chat
+- [ ] EXTRA: Search a person is a local filtering based on a text input
+
+### Chat
+
+- [ ] Sorted by date
+- [ ] Input add a local message from you (not using POST or anything)
+- [ ] EXTRA: Add a tooltip such as when hovering any message you see the
+      date of the message
+- [ ] EXTRA: Search a message is a local search for a message that, when
+      submited, scroll and highlight the first message found
+
+### Details
+
+- [x] I strongly advise you to use Tailwind for css styling. On all of our web
+      project, we use a mix of Tailwind and a bit of Scss but our main css
+      framework is Tailwind. It’s quite fast to learn and pretty simple, if you
+      don’t know it, take a look!
+- [ ] Put whatever photo you want on the profile picture on top of the chat list,
+      it can be a photo of yourself! :)
+- [ ] BIG EXTRA: Responsive!
