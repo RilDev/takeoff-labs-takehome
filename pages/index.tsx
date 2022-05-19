@@ -12,6 +12,28 @@ import { useEffect, useState } from "react";
 import { find } from "lodash";
 import moment from "moment";
 
+// shorter time stamps
+moment.updateLocale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s",
+    s: "Now",
+    ss: "Now",
+    m: "1m",
+    mm: "%dm",
+    h: "1h",
+    hh: "%dh",
+    d: "1d",
+    dd: "%dd",
+    w: "w",
+    ww: "%dw",
+    M: "1m",
+    MM: "%dm",
+    y: "1y",
+    yy: "%dy",
+  },
+});
+
 interface LandingPageProps {
   users: UserInterface[];
   chats: ChatInterface[];
@@ -47,12 +69,14 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
 
   return (
     <>
-      <div className="flex w-full h-screen bg-white main">
+      <div className="flex w-full h-screen bg-gray-400 main">
         <div className="flex flex-col flex-shrink-0 items-center px-2 py-6 w-96 border-r chat-list border-gray">
           <ClubLogoSvg className="w-[114px] mb-5" />
           <div className="flex justify-between items-center mb-4 w-full user">
             <img className="w-9 h-9 rounded-full" src="/images/user.png" />
-            <div>7 chats</div>
+            <div>
+              {fullChat.length} chat{fullChat.length > 1 ? "s" : ""}
+            </div>
           </div>
           <div className="relative mb-4 w-full search-person">
             <SeachIconSvg className="absolute top-[7px] left-2 w-3 h-3" />
@@ -68,10 +92,15 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               fullChat.map(({ user, lastMessage, isActive, id }) => (
                 <div
                   key={user.id}
-                  className="flex px-2 py-2 w-full h-16 rounded-xl cursor-pointer person gray"
+                  style={{
+                    gridTemplateColumns: "50px minmax(auto, 250px) auto",
+                  }}
+                  className={`grid gap-4 px-2 py-2 w-full h-16 rounded-xl cursor-pointer person ${
+                    user.id === activeChat?.user?.id ? "gray" : ""
+                  }`}
                   onClick={() => setActiveChat(find(fullChat, { id }))}
                 >
-                  <div className="block relative flex-shrink-0">
+                  <div className="relative">
                     <img
                       src={user.profilePicture}
                       className="w-[50px] h-[50px] rounded-full block"
@@ -80,24 +109,20 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                       <div className="w-2 h-2 bg-green-500 rounded-full border border-white status absolute top-[38px] left-[40px]"></div>
                     )}
                   </div>
-                  <div className="flex justify-between items-end ml-4 w-full">
-                    <div>
-                      <div
-                        className={`text-lg username ${
-                          lastMessage.writtenByMe === false ? "font-bold" : ""
-                        }`}
-                      >
-                        {user.name}
-                      </div>
-                      <div className="overflow-hidden text-ellipsis">
-                        <div className="overflow-hidden text-sm text-ellipsis tagline">
-                          {lastMessage.content}
-                        </div>
-                      </div>
+                  <div>
+                    <div
+                      className={`text-lg username ${
+                        lastMessage.writtenByMe === false ? "font-bold" : ""
+                      }`}
+                    >
+                      {user.name}
                     </div>
-                    <div className="text-sm date light-gray">
-                      {moment(lastMessage.date).fromNow()}
+                    <div className="text-sm truncate tagline">
+                      {lastMessage.content}
                     </div>
+                  </div>
+                  <div className="place-self-end text-sm date light-gray">
+                    {moment(lastMessage.date).fromNow()}
                   </div>
                 </div>
               ))}
@@ -110,7 +135,9 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                 src={activeChat?.id && activeChat.user.profilePicture}
                 className="w-[50px] h-[50px] rounded-full block"
               />
-              <div className="w-2 h-2 bg-green-500 rounded-full border border-white status absolute top-[38px] left-[40px]"></div>
+              {activeChat.isActive && (
+                <div className="w-2 h-2 bg-green-500 rounded-full border border-white status absolute top-[38px] left-[40px]"></div>
+              )}
             </div>
             <div className="text-lg username">
               {activeChat?.id && activeChat.user.name}
