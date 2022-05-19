@@ -47,23 +47,21 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   const [activeChat, setActiveChat] = useState({});
 
   useEffect(() => {
-    setFullChat(
-      chats.map((chat) => {
-        const user = find(users, { id: chat.withUser });
-        const lastMessage = find(messages, { id: chat.lastMessage });
-        const fullMessages = chat.messages.map((message) => {
-          const found = find(messages, {
-            id: message,
-          });
-          return found;
+    const fullChatTemp = chats.map((chat) => {
+      const user = find(users, { id: chat.withUser });
+      const lastMessage = find(messages, { id: chat.lastMessage });
+      const fullMessages = chat.messages.map((message) => {
+        const found = find(messages, {
+          id: message,
         });
+        return found;
+      });
 
-        console.log({ ...chat, user, lastMessage, fullMessages });
-
-        return { ...chat, user, lastMessage, messages };
-      })
-    );
-  }, [users, chats, messages]);
+      return { ...chat, user, lastMessage, messages };
+    });
+    setFullChat(fullChatTemp);
+    setActiveChat(fullChatTemp[0]);
+  }, []);
 
   console.log("fullchat", fullChat);
 
@@ -189,12 +187,16 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
         <div className="flex flex-col flex-shrink-0 items-center px-4 py-8 w-80 border-l search chat-list border-gray">
           <div className="block relative flex-shrink-0 mb-4">
             <img
-              src="/images/user.png"
+              src={activeChat?.id && activeChat.user.profilePicture}
               className="w-[85px] h-[85px] rounded-full block"
             />
-            <div className="w-3 h-3 bg-green-500 rounded-full border border-white status absolute top-[69px] left-[65px]"></div>
+            {activeChat?.id && activeChat.isActive && (
+              <div className="w-3 h-3 bg-green-500 rounded-full border border-white status absolute top-[69px] left-[65px]"></div>
+            )}
           </div>
-          <div className="mb-8 text-lg text-center name">User</div>
+          <div className="mb-8 text-lg text-center name">
+            {activeChat?.id && activeChat.user.name}
+          </div>
           <div className="relative mb-4 w-full search-person">
             <SeachIconSvg className="absolute top-[7px] left-2 w-3 h-3" />
             <input
