@@ -52,17 +52,19 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
     const fullChatTemp = chats.map((chat) => {
       const user = find(users, { id: chat.withUser });
       const lastMessage = find(messages, { id: chat.lastMessage });
-      const fullMessages = chat.messages.map((message) => {
-        const found = find(messages, {
-          id: message,
-        });
-        return found;
-      });
+      const orderedByDateMessages = messages.sort((messageA, messageB) =>
+        moment(messageA.date).diff(messageB.date)
+      );
 
       return { ...chat, user, lastMessage, messages };
     });
-    setFullChat(fullChatTemp);
-    setActiveChat(fullChatTemp[0]);
+
+    const orderedByDateFullChatTemp = fullChatTemp.sort((chatA, chatB) =>
+      moment(chatB.lastMessage.date).diff(chatA.lastMessage.date)
+    );
+
+    setFullChat(orderedByDateFullChatTemp);
+    setActiveChat(orderedByDateFullChatTemp[0]);
   }, []);
 
   // scroll to bottom of chat

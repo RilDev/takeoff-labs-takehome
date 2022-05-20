@@ -32,7 +32,7 @@ Start simple and go deep, that's how we work.
 
 ### List of Chat
 
-- [ ] Sorted by last message date
+- [x] Sorted by last message date
 - [x] Displaying profile picture, last message a time indicator
 - [x] Find a design way to understand that the message has not been read
 - [x] Clicking on a chat preview open the corresponding chat
@@ -40,7 +40,7 @@ Start simple and go deep, that's how we work.
 
 ### Chat
 
-- [ ] Sorted by date
+- [x] Sorted by date
 - [ ] Input add a local message from you (not using POST or anything)
 - [ ] EXTRA: Add a tooltip such as when hovering any message you see the
       date of the message
