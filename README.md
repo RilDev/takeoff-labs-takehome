@@ -62,5 +62,5 @@ Start simple and go deep, that's how we work.
 - [x] set user cards background to active when clicked
 - [ ] update the unread message status when chat clicked
 - [x] select the first chat on load
-- [ ] fix the chat scroll system
+- [x] fix the chat scroll system
 - [ ] refactor

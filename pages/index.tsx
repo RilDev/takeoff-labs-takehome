@@ -7,7 +7,7 @@ import UserInterface from "types/users";
 import ChatInterface from "types/chats";
 import MessageInterface from "types/messages";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { find } from "lodash";
 import moment from "moment";
@@ -45,7 +45,9 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
 
   const [fullChat, setFullChat] = useState([]);
   const [activeChat, setActiveChat] = useState({});
+  const chatMessagesRef = useRef(null);
 
+  // generate fullChat
   useEffect(() => {
     const fullChatTemp = chats.map((chat) => {
       const user = find(users, { id: chat.withUser });
@@ -62,6 +64,11 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
     setFullChat(fullChatTemp);
     setActiveChat(fullChatTemp[0]);
   }, []);
+
+  // scroll to bottom of chat
+  useEffect(() => {
+    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+  }, [activeChat]);
 
   console.log("fullchat", fullChat);
 
@@ -126,8 +133,8 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               ))}
           </div>
         </div>
-        <div className="flex flex-col w-full h-screen chat">
-          <div className="flex items-center px-4 py-3 border-b chat-header border-gray">
+        <div className="relative w-full chat">
+          <div className="flex absolute items-center px-4 py-3 w-full bg-white border-b chat-header border-gray">
             <div className="block relative flex-shrink-0 mr-4">
               <img
                 src={activeChat?.id && activeChat.user.profilePicture}
@@ -141,42 +148,47 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               {activeChat?.id && activeChat.user.name}
             </div>
           </div>
-          <div className="flex flex-col justify-end px-4 py-4 mt-auto space-y-2 w-full chat-messages">
-            {activeChat?.id &&
-              activeChat.messages.map((message) => {
-                if (message.writtenByMe && message.chatId === activeChat.id) {
-                  return (
-                    <div className="flex self-end you">
-                      <div className="message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full">
-                        {message.content}
+          <div
+            ref={chatMessagesRef}
+            className="flex overflow-y-scroll px-4 pt-24 pb-8 w-full h-screen chat-messages"
+          >
+            <div className="flex flex-col mt-auto space-y-2 w-full">
+              {activeChat?.id &&
+                activeChat.messages.map((message) => {
+                  if (message.writtenByMe && message.chatId === activeChat.id) {
+                    return (
+                      <div className="flex self-end you">
+                        <div className="message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full">
+                          {message.content}
+                        </div>
+                        <img
+                          src="/images/user.png"
+                          alt="oter user"
+                          className="w-[26px] h-[26px] rounded-full"
+                        />
                       </div>
-                      <img
-                        src="/images/user.png"
-                        alt="oter user"
-                        className="w-[26px] h-[26px] rounded-full"
-                      />
-                    </div>
-                  );
-                } else if (
-                  !message.writtenByMe &&
-                  message.chatId === activeChat.id
-                ) {
-                  return (
-                    <div className="flex other">
-                      <img
-                        src={activeChat.user.profilePicture}
-                        alt="oter user"
-                        className="w-[26px] h-[26px] rounded-full mr-[6px]"
-                      />
-                      <div className="message gray text-sm px-[13px] py-[6px] rounded-full">
-                        {message.content}
+                    );
+                  } else if (
+                    !message.writtenByMe &&
+                    message.chatId === activeChat.id
+                  ) {
+                    return (
+                      <div className="flex other">
+                        <img
+                          src={activeChat.user.profilePicture}
+                          alt="oter user"
+                          className="w-[26px] h-[26px] rounded-full mr-[6px]"
+                        />
+                        <div className="message gray text-sm px-[13px] py-[6px] rounded-full">
+                          {message.content}
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-              })}
+                    );
+                  }
+                })}
+            </div>
           </div>
-          <div className="px-4 chat-bar">
+          <div className="absolute bottom-0 px-4 w-full chat-bar">
             <input
               type="text"
               className="px-3 w-full text-sm rounded-full gray mb-[5px]"
@@ -219,6 +231,10 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
         }
 
         .chat-messages {
+        }
+
+        .chat-messages::-webkit-scrollbar {
+          display: none;
         }
 
         .chat {
