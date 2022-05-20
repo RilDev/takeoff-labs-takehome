@@ -32,7 +32,7 @@ Start simple and go deep, that's how we work.
 
 ### List of Chat
 
-- [x] Sorted by last message date
+- [ ] Sorted by last message date
 - [x] Displaying profile picture, last message a time indicator
 - [x] Find a design way to understand that the message has not been read
 - [x] Clicking on a chat preview open the corresponding chat
@@ -40,7 +40,7 @@ Start simple and go deep, that's how we work.
 
 ### Chat
 
-- [x] Sorted by date
+- [ ] Sorted by date
 - [ ] Input add a local message from you (not using POST or anything)
 - [ ] EXTRA: Add a tooltip such as when hovering any message you see the
       date of the message
@@ -53,6 +53,14 @@ Start simple and go deep, that's how we work.
       project, we use a mix of Tailwind and a bit of Scss but our main css
       framework is Tailwind. It’s quite fast to learn and pretty simple, if you
       don’t know it, take a look!
-- [ ] Put whatever photo you want on the profile picture on top of the chat list,
+- [x] Put whatever photo you want on the profile picture on top of the chat list,
       it can be a photo of yourself! :)
 - [ ] BIG EXTRA: Responsive!
+
+### Extra
+
+- [x] set user cards background to active when clicked
+- [ ] update the unread message status when chat clicked
+- [x] select the first chat on load
+- [ ] fix the chat scroll system
+- [ ] refactor
