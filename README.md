@@ -44,7 +44,7 @@ Start simple and go deep, that's how we work.
 - [x] Input add a local message from you (not using POST or anything)
 - [x] EXTRA: Add a tooltip such as when hovering any message you see the
       date of the message
-- [ ] EXTRA: Search a message is a local search for a message that, when
+- [x] EXTRA: Search a message is a local search for a message that, when
       submited, scroll and highlight the first message found
 
 ### Details

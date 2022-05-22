@@ -48,7 +48,9 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   const [activeChat, setActiveChat] = useState({});
   const [extraMessages, setExtraMessages] = useState([]);
   const [searchUser, setSearchUser] = useState("");
+  const [searchMessage, setSearchMessage] = useState("");
   const chatMessagesRef = useRef(null);
+  const messagesRef = useRef(new Map());
 
   // generate fullChat
   useEffect(() => {
@@ -59,7 +61,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
         moment(messageA.date).diff(messageB.date)
       );
 
-      return { ...chat, user, lastMessage, messages };
+      return { ...chat, user, lastMessage, messages: orderedByDateMessages };
     });
 
     const orderedByDateFullChatTemp = fullChatTemp.sort((chatA, chatB) =>
@@ -120,7 +122,10 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                       className={`grid gap-4 px-2 py-2 w-full h-16 rounded-xl cursor-pointer person ${
                         user.id === activeChat?.user?.id ? "gray" : ""
                       }`}
-                      onClick={() => setActiveChat(find(fullChat, { id }))}
+                      onClick={() => {
+                        setActiveChat(find(fullChat, { id }));
+                        setSearchMessage("");
+                      }}
                     >
                       <div className="relative">
                         <img
@@ -178,12 +183,22 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                 activeChat.messages.map((message) => {
                   if (message.writtenByMe && message.chatId === activeChat.id) {
                     return (
-                      <div key={message.id} className="flex self-end you">
+                      <div
+                        key={message.id}
+                        ref={(node) =>
+                          node && messagesRef.current.set(message.id, node)
+                        }
+                        className="flex self-end you"
+                      >
                         <div
                           data-tip={moment(message.date).format(
                             "ddd. MMM D, YYYY h:mma"
                           )}
-                          className="break-word message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full"
+                          className={`text-sm text-white rounded-full break-word message green px-[13px] mr-[6px] py-[6px] ${
+                            searchMessage?.id === message.id
+                              ? "bg-green-500 text-white"
+                              : ""
+                          }`}
                         >
                           {message.content}
                         </div>
@@ -199,7 +214,13 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                     message.chatId === activeChat.id
                   ) {
                     return (
-                      <div key={message.id} className="flex other">
+                      <div
+                        key={message.id}
+                        ref={(node) =>
+                          node && messagesRef.current.set(message.id, node)
+                        }
+                        className="flex other"
+                      >
                         <img
                           src={activeChat.user.profilePicture}
                           alt="oter user"
@@ -209,7 +230,11 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                           data-tip={moment(message.date).format(
                             "ddd. MMM D, YYYY h:mma"
                           )}
-                          className="break-word message gray text-sm px-[13px] py-[6px] rounded-full"
+                          className={`break-word message gray text-sm px-[13px] py-[6px] rounded-full ${
+                            searchMessage?.id === message.id
+                              ? "bg-green-500 text-white"
+                              : ""
+                          }`}
                         >
                           {message.content}
                         </div>
@@ -226,7 +251,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                         data-tip={moment(message.date).format(
                           "ddd. MMM D, YYYY h:mma"
                         )}
-                        className="break-word message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full"
+                        className={`text-sm text-white rounded-full break-word message green px-[13px] mr-[6px] py-[6px]`}
                       >
                         {message.content}
                       </div>
@@ -285,6 +310,33 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               type="text"
               className="pl-7 w-full text-sm rounded-full gray"
               placeholder="Search a message"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  const currentChatMessages = messages.filter(
+                    (message) => message.chatId === activeChat.id
+                  );
+
+                  const foundMessage = find(currentChatMessages, (message) =>
+                    message.content
+                      .toLowerCase()
+                      .includes(event.target.value.toLowerCase())
+                  );
+
+                  setSearchMessage(foundMessage);
+
+                  if (foundMessage) {
+                    const foundMessageTop = messagesRef?.current?.get(
+                      foundMessage.id
+                    ).offsetTop;
+                    chatMessagesRef.current.scrollTo({
+                      top: foundMessageTop - 96,
+                      behavior: "smooth",
+                    });
+                  }
+
+                  event.target.value = "";
+                }
+              }}
             />
           </div>
         </div>
