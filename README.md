@@ -41,7 +41,7 @@ Start simple and go deep, that's how we work.
 ### Chat
 
 - [x] Sorted by date
-- [ ] Input add a local message from you (not using POST or anything)
+- [x] Input add a local message from you (not using POST or anything)
 - [ ] EXTRA: Add a tooltip such as when hovering any message you see the
       date of the message
 - [ ] EXTRA: Search a message is a local search for a message that, when

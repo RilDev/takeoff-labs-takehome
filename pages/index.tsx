@@ -45,6 +45,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
 
   const [fullChat, setFullChat] = useState([]);
   const [activeChat, setActiveChat] = useState({});
+  const [extraMessages, setExtraMessages] = useState([]);
   const chatMessagesRef = useRef(null);
 
   // generate fullChat
@@ -70,7 +71,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   // scroll to bottom of chat
   useEffect(() => {
     chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-  }, [activeChat]);
+  }, [activeChat, extraMessages]);
 
   console.log("fullchat", fullChat);
 
@@ -188,6 +189,25 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                     );
                   }
                 })}
+
+              {extraMessages.map((message) => {
+                if (activeChat.id === message.id) {
+                  return (
+                    <div className="flex self-end you">
+                      <div className="message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full">
+                        {message.content}
+                      </div>
+                      <img
+                        src="/images/user.png"
+                        alt="oter user"
+                        className="w-[26px] h-[26px] rounded-full"
+                      />
+                    </div>
+                  );
+                }
+
+                return null;
+              })}
             </div>
           </div>
           <div className="absolute bottom-0 px-4 w-full chat-bar">
@@ -195,6 +215,20 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               type="text"
               className="px-3 w-full text-sm rounded-full gray mb-[5px]"
               placeholder="Aa"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  console.log("new message");
+                  setExtraMessages([
+                    ...extraMessages,
+                    {
+                      content: event.target.value,
+                      id: activeChat.id,
+                      date: Date(),
+                    },
+                  ]);
+                  event.target.value = "";
+                }
+              }}
             />
           </div>
         </div>
