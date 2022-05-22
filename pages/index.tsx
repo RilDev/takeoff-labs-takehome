@@ -3,6 +3,7 @@ import generateChats from "data/chats";
 
 import ClubLogoSvg from "icons/club-logo.svg";
 import SeachIconSvg from "icons/search-icon.svg";
+import BackIconSvg from "icons/back-icon.svg";
 import UserInterface from "types/users";
 import ChatInterface from "types/chats";
 import MessageInterface from "types/messages";
@@ -42,8 +43,6 @@ interface LandingPageProps {
 }
 
 const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
-  console.log({ users, chats, messages });
-
   const [fullChat, setFullChat] = useState([]);
   const [activeChat, setActiveChat] = useState({});
   const [extraMessages, setExtraMessages] = useState([]);
@@ -51,6 +50,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   const [searchMessage, setSearchMessage] = useState("");
   const chatMessagesRef = useRef(null);
   const messagesRef = useRef(new Map());
+  const chatRef = useRef(new Map());
 
   // generate fullChat
   useEffect(() => {
@@ -79,15 +79,20 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
 
   useEffect(() => {
     ReactTooltip.rebuild();
-    console.log("recreate tooptip");
   });
 
-  console.log("fullchat", fullChat);
+  const goToUsers = () => {
+    chatRef.current.style.zIndex = 0;
+  };
+
+  const goToChat = () => {
+    chatRef.current.style.zIndex = 10;
+  };
 
   return (
     <>
-      <div className="flex w-full h-screen bg-gray-400 main">
-        <div className="flex flex-col flex-shrink-0 items-center px-2 py-6 w-96 border-r chat-list border-gray">
+      <div className="flex relative w-full h-screen bg-white main">
+        <div className="flex absolute z-10 flex-col flex-shrink-0 items-center px-2 py-6 w-full h-screen bg-white border-r tablet:relative tablet:w-96 chat-list border-gray">
           <ClubLogoSvg className="w-[114px] mb-5" />
           <div className="flex justify-between items-center mb-4 w-full user">
             <img className="w-9 h-9 rounded-full" src="/images/user.png" />
@@ -125,6 +130,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                       onClick={() => {
                         setActiveChat(find(fullChat, { id }));
                         setSearchMessage("");
+                        goToChat();
                       }}
                     >
                       <div className="relative">
@@ -159,7 +165,10 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               })}
           </div>
         </div>
-        <div className="relative w-full chat">
+        <div
+          ref={chatRef}
+          className="absolute relative w-full bg-white chat tablet:relative"
+        >
           <div className="flex absolute items-center px-4 py-3 w-full bg-white border-b chat-header border-gray">
             <div className="block relative flex-shrink-0 mr-4">
               <img
@@ -172,6 +181,12 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
             </div>
             <div className="text-lg username">
               {activeChat?.id && activeChat.user.name}
+            </div>
+            <div
+              className="ml-auto cursor-pointer tablet:hidden"
+              onClick={goToUsers}
+            >
+              <BackIconSvg />
             </div>
           </div>
           <div
@@ -275,7 +290,6 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               placeholder="Aa"
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
-                  console.log("new message");
                   setExtraMessages([
                     ...extraMessages,
                     {
@@ -291,7 +305,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-col flex-shrink-0 items-center px-4 py-8 w-80 border-l search chat-list border-gray">
+        <div className="hidden flex-col flex-shrink-0 items-center px-4 py-8 w-80 border-l search chat-list border-gray desktop:flex">
           <div className="block relative flex-shrink-0 mb-4">
             <img
               src={activeChat?.id && activeChat.user.profilePicture}

@@ -55,7 +55,7 @@ Start simple and go deep, that's how we work.
       don’t know it, take a look!
 - [x] Put whatever photo you want on the profile picture on top of the chat list,
       it can be a photo of yourself! :)
-- [ ] BIG EXTRA: Responsive!
+- [x] BIG EXTRA: Responsive!
 
 ### Extra
 
