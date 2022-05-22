@@ -42,7 +42,7 @@ Start simple and go deep, that's how we work.
 
 - [x] Sorted by date
 - [x] Input add a local message from you (not using POST or anything)
-- [ ] EXTRA: Add a tooltip such as when hovering any message you see the
+- [x] EXTRA: Add a tooltip such as when hovering any message you see the
       date of the message
 - [ ] EXTRA: Search a message is a local search for a message that, when
       submited, scroll and highlight the first message found

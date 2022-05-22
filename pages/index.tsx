@@ -11,6 +11,7 @@ import { useEffect, useState, useRef } from "react";
 
 import { find } from "lodash";
 import moment from "moment";
+import ReactTooltip from "react-tooltip";
 
 // shorter time stamps
 moment.updateLocale("en", {
@@ -73,6 +74,11 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   useEffect(() => {
     chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
   }, [activeChat, extraMessages]);
+
+  useEffect(() => {
+    ReactTooltip.rebuild();
+    console.log("recreate tooptip");
+  });
 
   console.log("fullchat", fullChat);
 
@@ -172,8 +178,13 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                 activeChat.messages.map((message) => {
                   if (message.writtenByMe && message.chatId === activeChat.id) {
                     return (
-                      <div className="flex self-end you">
-                        <div className="message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full">
+                      <div key={message.id} className="flex self-end you">
+                        <div
+                          data-tip={moment(message.date).format(
+                            "ddd. MMM D, YYYY h:mma"
+                          )}
+                          className="break-word message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full"
+                        >
                           {message.content}
                         </div>
                         <img
@@ -188,13 +199,18 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                     message.chatId === activeChat.id
                   ) {
                     return (
-                      <div className="flex other">
+                      <div key={message.id} className="flex other">
                         <img
                           src={activeChat.user.profilePicture}
                           alt="oter user"
                           className="w-[26px] h-[26px] rounded-full mr-[6px]"
                         />
-                        <div className="message gray text-sm px-[13px] py-[6px] rounded-full">
+                        <div
+                          data-tip={moment(message.date).format(
+                            "ddd. MMM D, YYYY h:mma"
+                          )}
+                          className="break-word message gray text-sm px-[13px] py-[6px] rounded-full"
+                        >
                           {message.content}
                         </div>
                       </div>
@@ -203,10 +219,15 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                 })}
 
               {extraMessages.map((message) => {
-                if (activeChat.id === message.id) {
+                if (activeChat.id === message.chatId) {
                   return (
-                    <div className="flex self-end you">
-                      <div className="message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full">
+                    <div key={message.id} className="flex self-end you">
+                      <div
+                        data-tip={moment(message.date).format(
+                          "ddd. MMM D, YYYY h:mma"
+                        )}
+                        className="break-word message green text-white text-sm px-[13px] mr-[6px] py-[6px] rounded-full"
+                      >
                         {message.content}
                       </div>
                       <img
@@ -234,8 +255,9 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                     ...extraMessages,
                     {
                       content: event.target.value,
-                      id: activeChat.id,
+                      chatId: activeChat.id,
                       date: Date(),
+                      id: Date.now(),
                     },
                   ]);
                   event.target.value = "";
@@ -268,6 +290,13 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
         </div>
       </div>
 
+      <ReactTooltip
+        type="dark"
+        effect="solid"
+        textColor="#fff"
+        backgroundColor="#000"
+      />
+
       <style>
         {`
         .main {
@@ -287,6 +316,10 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
 
         .chat {
 
+        }
+
+        .break-word {
+          word-break: break-word;
         }
 
         .search {
