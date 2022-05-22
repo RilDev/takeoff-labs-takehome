@@ -46,6 +46,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   const [fullChat, setFullChat] = useState([]);
   const [activeChat, setActiveChat] = useState({});
   const [extraMessages, setExtraMessages] = useState([]);
+  const [searchUser, setSearchUser] = useState("");
   const chatMessagesRef = useRef(null);
 
   // generate fullChat
@@ -92,48 +93,59 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
               type="text"
               className="pl-7 w-full text-sm rounded-full gray"
               placeholder="Search a person"
+              value={searchUser}
+              onChange={(event) => setSearchUser(event.target.value)}
             />
           </div>
 
           <div className="space-y-2 w-full person-list">
             {fullChat &&
-              fullChat.map(({ user, lastMessage, isActive, id }) => (
-                <div
-                  key={user.id}
-                  style={{
-                    gridTemplateColumns: "50px minmax(auto, 250px) auto",
-                  }}
-                  className={`grid gap-4 px-2 py-2 w-full h-16 rounded-xl cursor-pointer person ${
-                    user.id === activeChat?.user?.id ? "gray" : ""
-                  }`}
-                  onClick={() => setActiveChat(find(fullChat, { id }))}
-                >
-                  <div className="relative">
-                    <img
-                      src={user.profilePicture}
-                      className="w-[50px] h-[50px] rounded-full block"
-                    />
-                    {isActive && (
-                      <div className="w-2 h-2 bg-green-500 rounded-full border border-white status absolute top-[38px] left-[40px]"></div>
-                    )}
-                  </div>
-                  <div>
+              fullChat.map(({ user, lastMessage, isActive, id }) => {
+                if (
+                  setSearchUser.length &&
+                  user.name.toLowerCase().includes(searchUser)
+                ) {
+                  return (
                     <div
-                      className={`text-lg username ${
-                        lastMessage.writtenByMe === false ? "font-bold" : ""
+                      key={user.id}
+                      style={{
+                        gridTemplateColumns: "50px minmax(auto, 250px) auto",
+                      }}
+                      className={`grid gap-4 px-2 py-2 w-full h-16 rounded-xl cursor-pointer person ${
+                        user.id === activeChat?.user?.id ? "gray" : ""
                       }`}
+                      onClick={() => setActiveChat(find(fullChat, { id }))}
                     >
-                      {user.name}
+                      <div className="relative">
+                        <img
+                          src={user.profilePicture}
+                          className="w-[50px] h-[50px] rounded-full block"
+                        />
+                        {isActive && (
+                          <div className="w-2 h-2 bg-green-500 rounded-full border border-white status absolute top-[38px] left-[40px]"></div>
+                        )}
+                      </div>
+                      <div>
+                        <div
+                          className={`text-lg username ${
+                            lastMessage.writtenByMe === false ? "font-bold" : ""
+                          }`}
+                        >
+                          {user.name}
+                        </div>
+                        <div className="text-sm truncate tagline">
+                          {lastMessage.content}
+                        </div>
+                      </div>
+                      <div className="place-self-end text-sm date light-gray">
+                        {moment(lastMessage.date).fromNow()}
+                      </div>
                     </div>
-                    <div className="text-sm truncate tagline">
-                      {lastMessage.content}
-                    </div>
-                  </div>
-                  <div className="place-self-end text-sm date light-gray">
-                    {moment(lastMessage.date).fromNow()}
-                  </div>
-                </div>
-              ))}
+                  );
+                }
+
+                return null;
+              })}
           </div>
         </div>
         <div className="relative w-full chat">

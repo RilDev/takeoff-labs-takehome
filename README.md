@@ -36,7 +36,7 @@ Start simple and go deep, that's how we work.
 - [x] Displaying profile picture, last message a time indicator
 - [x] Find a design way to understand that the message has not been read
 - [x] Clicking on a chat preview open the corresponding chat
-- [ ] EXTRA: Search a person is a local filtering based on a text input
+- [x] EXTRA: Search a person is a local filtering based on a text input
 
 ### Chat
 
