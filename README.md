@@ -60,7 +60,7 @@ Start simple and go deep, that's how we work.
 ### Extra
 
 - [x] set user cards background to active when clicked
-- [ ] update the unread message status when chat clicked
+- [x] update the unread message status when chat clicked
 - [x] select the first chat on load
 - [x] fix the chat scroll system
 - [ ] refactor

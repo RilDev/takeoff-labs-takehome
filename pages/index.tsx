@@ -48,6 +48,7 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   const [extraMessages, setExtraMessages] = useState([]);
   const [searchUser, setSearchUser] = useState("");
   const [searchMessage, setSearchMessage] = useState("");
+  const [unreadMessages, setUnreadMessages] = useState([]);
   const chatMessagesRef = useRef(null);
   const messagesRef = useRef(new Map());
   const chatRef = useRef(new Map());
@@ -76,6 +77,27 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
   useEffect(() => {
     chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
   }, [activeChat, extraMessages]);
+
+  // update unread messages
+  useEffect(() => {
+    let unreadMessagesTemp = [];
+
+    if (unreadMessages.length) {
+      unreadMessagesTemp = unreadMessages.map((message) =>
+        message.chatId === activeChat.id
+          ? { ...message, writtenByMe: true }
+          : message
+      );
+    } else {
+      unreadMessagesTemp = fullChat.map(({ lastMessage }) =>
+        lastMessage.chatId === activeChat.id
+          ? { ...lastMessage, writtenByMe: true }
+          : lastMessage
+      );
+    }
+
+    setUnreadMessages([...unreadMessagesTemp]);
+  }, [fullChat, activeChat]);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -145,7 +167,10 @@ const LandingPage = ({ users, chats, messages }: LandingPageProps) => {
                       <div>
                         <div
                           className={`text-lg username ${
-                            lastMessage.writtenByMe === false ? "font-bold" : ""
+                            find(unreadMessages, { chatId: id })
+                              ?.writtenByMe === false
+                              ? "font-bold"
+                              : ""
                           }`}
                         >
                           {user.name}
